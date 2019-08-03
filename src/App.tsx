@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import { APIService } from './APIService';
+import { JSON } from './constants';
 import './App.css';
+import { APIResponse } from './types';
 
 const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+   const [data, setData] = useState<any>()
+   const fetchData = async ():Promise<void> => {
+      try {
+         const api = new APIService('secret-token').setHeaders([...JSON]);
+         const res = await fetch("https://rickandmortyapi.com/api/character", api.request());
+         const data: APIResponse<any> = await res.json();
+         setData(data)
+      } catch (error) {
+         console.error(error)
+      }
+   }
+
+   useEffect(() => {
+      fetchData()
+   }, [])
+   useEffect(() => {
+      console.log(data)
+   }, [data])
+   return (
+      <div className='App'>
+         <header className='App-header'>
+            Hello world
+         </header>
+      </div>
+   );
+};
 
 export default App;
